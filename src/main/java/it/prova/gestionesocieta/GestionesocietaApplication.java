@@ -7,10 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import it.prova.gestionesocieta.service.BatteriaDiTestService;
 
-
 @SpringBootApplication
-public class GestionesocietaApplication implements CommandLineRunner{
-	
+public class GestionesocietaApplication implements CommandLineRunner {
+
 	@Autowired
 	private BatteriaDiTestService batteriaDiTestService;
 
@@ -18,9 +17,11 @@ public class GestionesocietaApplication implements CommandLineRunner{
 		SpringApplication.run(GestionesocietaApplication.class, args);
 	}
 
-	
 	@Override
 	public void run(String... args) throws Exception {
-		batteriaDiTestService.testInserisciNuovoMunicipio();
+		batteriaDiTestService.testInserisciNuovaSocieta();
+		batteriaDiTestService.testFindSocietaByExample();
+		batteriaDiTestService.testDeleteSocietaConDipendenti();
+		batteriaDiTestService.testInserisciNuovoDipendenteDataSocieta();
 	}
 }
