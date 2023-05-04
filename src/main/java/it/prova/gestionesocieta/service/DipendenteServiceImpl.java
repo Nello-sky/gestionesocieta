@@ -44,7 +44,7 @@ public class DipendenteServiceImpl implements DipendenteService {
 		
 	}
 
-	@Override
+	@Transactional //???
 	public void insertDipendente(Dipendente dipendente) {
 		dipendenteRepository.save(dipendente);
 		
@@ -54,6 +54,12 @@ public class DipendenteServiceImpl implements DipendenteService {
 	public Dipendente caricaSingoloDipendente(Long id) {
 		return dipendenteRepository.findById(id).orElse(null);
 		
+	}
+
+	@Transactional(readOnly = true)
+	public Dipendente findPerAnzianitaBySocietaFondatePrimaDi(int annoSup) {
+		
+		return dipendenteRepository.findOldBySocietaFondatePrimaDi(annoSup) ;
 	}
 	
 }

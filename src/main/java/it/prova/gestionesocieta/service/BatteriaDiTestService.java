@@ -209,4 +209,27 @@ public class BatteriaDiTestService {
 		System.out.println("testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi........OK");
 	}
 
+	public void testCercaDipendenteConMassimaAnzianitaInSocietaFondatePrimaDI() {
+		int yearToCheck = 1990;
+		int yearToAvoidControl = 1985; // non dovrebbero esserci dipendenti con ingaggi precendenti alla fondazione
+		
+		Societa nuovaSocieta = new Societa("RS", "VIA", LocalDate.of(yearToAvoidControl, 7, 7));
+		if (nuovaSocieta.getId() != null)
+			throw new RuntimeException(
+					"testCercaDipendenteConMassimaAnzianitaInSocietaFondatePrimaDI...failed: transient object con id valorizzato");
+		societaService.inserisciNuovo(nuovaSocieta);
+
+		IntStream.range(1, 6).forEach(i -> {
+			dipendenteService.inserisciNuovo(
+					new Dipendente("nome" + i, "cognome" + i, LocalDate.of(yearToAvoidControl + i, 7, 7), 50 + i, nuovaSocieta));
+		});
+		
+		
+		Dipendente dipendenteTarget = dipendenteService.findPerAnzianitaBySocietaFondatePrimaDi(yearToCheck);
+		if (dipendenteTarget.getId() == 0 )
+			throw new RuntimeException(
+					"testCercaDipendenteConMassimaAnzianitaInSocietaFondatePrimaDI..failed: non trovato per anzianita");
+		System.out.println("testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi........OK");
+	} 
+
 }

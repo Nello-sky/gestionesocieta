@@ -19,5 +19,7 @@ public interface DipendenteService {
 	void insertDipendente(Dipendente dipendente);
 	
 	Dipendente caricaSingoloDipendente(Long id);
+	
+	Dipendente findPerAnzianitaBySocietaFondatePrimaDi (int annoSup);
 
 }
