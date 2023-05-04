@@ -230,6 +230,7 @@ public class BatteriaDiTestService {
 			throw new RuntimeException(
 					"testCercaDipendenteConMassimaAnzianitaInSocietaFondatePrimaDI..failed: non trovato per anzianita");
 		System.out.println("testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi........OK");
+		System.out.println(dipendenteTarget.getNome());
 	} 
 
 }

@@ -1,6 +1,6 @@
 package it.prova.gestionesocieta.eccezioni;
 
-public class SocietaAssociataADipendentiException extends Exception {
+public class SocietaAssociataADipendentiException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 

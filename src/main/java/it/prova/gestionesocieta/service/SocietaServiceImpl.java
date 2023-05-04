@@ -75,7 +75,7 @@ public class SocietaServiceImpl implements SocietaService {
 	}
 
 	@Override
-	public void rimuoviConEccezione(Societa societa) throws SocietaAssociataADipendentiException {
+	public void rimuoviConEccezione(Societa societa) {
 		if (societa.getDipendenti().size() > 0) {
 			throw new SocietaAssociataADipendentiException("collegamenti esistenti");
 		}
@@ -86,6 +86,17 @@ public class SocietaServiceImpl implements SocietaService {
 	@Transactional(readOnly = true)
 	public List<Societa> findByDipendentiConRedditoAnnuoLordoMaggioreDi(int ragioneSociale) {
 		return societaRepository.findAllDistinctByDipendenti_redditoAnnuoLordoGreaterThan(ragioneSociale);
+	}
+
+	@Override
+	public void deleteWithExceptionBySocietyId(Long id) throws SocietaAssociataADipendentiException {
+		Societa societa = societaRepository.searchById(id);
+		if (societa.getDipendenti().size() > 0) {
+			throw new SocietaAssociataADipendentiException("collegamenti esistenti");
+		}
+		societaRepository.delete(societa);
+		
+		
 	}
 
 }

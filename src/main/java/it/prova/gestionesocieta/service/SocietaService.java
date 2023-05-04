@@ -13,7 +13,9 @@ public interface SocietaService {
 
 	List<Societa> findByExample(Societa example);
 	
-	void rimuoviConEccezione(Societa societa) throws SocietaAssociataADipendentiException;
+	void rimuoviConEccezione(Societa societa);
+	
+	void deleteWithExceptionBySocietyId(Long id) throws SocietaAssociataADipendentiException;
 	
 	Societa caricaSingolaSocietaEager(Long id);
 	
