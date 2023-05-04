@@ -25,5 +25,6 @@ public class GestionesocietaApplication implements CommandLineRunner {
 		batteriaDiTestService.testInserisciNuovoDipendenteDataSocieta();
 		batteriaDiTestService.testInserisciNuovoDipendente();
 		batteriaDiTestService.testAggiornaDipendente();
+		batteriaDiTestService.testFindAllDistinctSocietaConDipendentiConRedditoAnnuoLordoMaggioreDi();
 	}
 }

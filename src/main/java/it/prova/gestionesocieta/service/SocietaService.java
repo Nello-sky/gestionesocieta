@@ -17,6 +17,6 @@ public interface SocietaService {
 	
 	Societa caricaSingolaSocietaEager(Long id);
 	
-	
+	List<Societa> findByDipendentiConRedditoAnnuoLordoMaggioreDi(int ragioneSociale);
 
 }

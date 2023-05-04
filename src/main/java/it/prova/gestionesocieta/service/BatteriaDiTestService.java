@@ -2,7 +2,11 @@ package it.prova.gestionesocieta.service;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,7 +105,8 @@ public class BatteriaDiTestService {
 
 		Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
 		if (nuovaSocieta.getId() != null)
-			throw new RuntimeException("testInserisciNuovoDipendenteDataSocieta...failed: transient object con id valorizzato");
+			throw new RuntimeException(
+					"testInserisciNuovoDipendenteDataSocieta...failed: transient object con id valorizzato");
 		// salvo
 		societaService.inserisciNuovo(nuovaSocieta);
 		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
@@ -138,7 +143,6 @@ public class BatteriaDiTestService {
 				LocalDate.now(), 55, nuovaSocieta);
 
 		dipendenteService.inserisciNuovo(nuovoDipendente);
-		
 
 		// controllo sia inserita
 		if (nuovoDipendente.getId() == null || nuovoDipendente.getId() < 1)
@@ -158,23 +162,51 @@ public class BatteriaDiTestService {
 		societaService.inserisciNuovo(nuovaSocieta);
 		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
 			throw new RuntimeException("testAggiornaDipendente...failed: inserimento societa fallito");
-		
-		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi, LocalDate.now(), 55 , nuovaSocieta);
+
+		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi,
+				LocalDate.now(), 55, nuovaSocieta);
 		dipendenteService.inserisciNuovo(nuovoDipendente);
 		if (nuovoDipendente.getId() == null || nuovoDipendente.getId() < 1)
 			throw new RuntimeException("testAggiornaDipendente...failed: inserimento dipendente fallito");
-		
-		//ricarico per confronto
+
+		// ricarico per confronto
 		Dipendente nuovoDipendenteUpload = dipendenteService.caricaSingoloDipendente(nuovoDipendente.getId());
 		nuovoDipendenteUpload.setRedditoAnnuoLordo(56);
-		//modifica
+		// modifica
 		dipendenteService.aggiorna(nuovoDipendenteUpload);
-		//test
+		// test
 		if (nuovoDipendenteUpload.getRedditoAnnuoLordo() != 56)
 			throw new RuntimeException("testAggiornaDipendente...failed: aggiornamento fallito");
 
 		System.out.println("testAggiornaDipendente........OK");
-		
+
+	}
+
+	public void testFindAllDistinctSocietaConDipendentiConRedditoAnnuoLordoMaggioreDi() {
+		Long nowInMillisecondi = new Date().getTime();
+		int redditoAnnuoTest = 30000;
+
+		IntStream.range(1, 5).forEach(i -> {
+			int redditoAnnuoToSet = i % 2 == 0 ? 10000 : 40000;
+			Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
+			societaService.inserisciNuovo(nuovaSocieta);
+			dipendenteService.inserisciNuovo(new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi,
+					LocalDate.now(), redditoAnnuoToSet, nuovaSocieta));
+			dipendenteService.inserisciNuovo(new Dipendente("name" + nowInMillisecondi, "surname" + nowInMillisecondi,
+					LocalDate.now(), redditoAnnuoToSet, nuovaSocieta));
+		});
+		// test numero societa
+		List<Societa> societaAttese = societaService.findByDipendentiConRedditoAnnuoLordoMaggioreDi(redditoAnnuoTest);
+		if (societaAttese.size() != 2)
+			throw new RuntimeException(
+					"testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi..failed:numero societa errato");
+		// test numero dipendenti
+		List<Dipendente> dipendentiAttesi = societaAttese.stream().flatMap(societa -> societa.getDipendenti().stream())
+				.collect(Collectors.toList());
+		if (dipendentiAttesi.size() != 4)
+			throw new RuntimeException(
+					"testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi..failed:numero dipendenti errato");
+		System.out.println("testFindAllDistinctSocietaConDipendentiConRagioneSocialeMaggioreDi........OK");
 	}
 
 }

@@ -83,4 +83,9 @@ public class SocietaServiceImpl implements SocietaService {
 
 	}
 
+	@Transactional(readOnly = true)
+	public List<Societa> findByDipendentiConRedditoAnnuoLordoMaggioreDi(int ragioneSociale) {
+		return societaRepository.findAllDistinctByDipendenti_redditoAnnuoLordoGreaterThan(ragioneSociale);
+	}
+
 }
