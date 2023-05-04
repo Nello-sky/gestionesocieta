@@ -37,4 +37,23 @@ public class DipendenteServiceImpl implements DipendenteService {
 		dipendenteRepository.save(dipendente);
 		
 	}
+
+	@Transactional
+	public void aggiorna(Dipendente dipendente) {
+		dipendenteRepository.save(dipendente);
+		
+	}
+
+	@Override
+	public void insertDipendente(Dipendente dipendente) {
+		dipendenteRepository.save(dipendente);
+		
+	}
+
+	@Override
+	public Dipendente caricaSingoloDipendente(Long id) {
+		return dipendenteRepository.findById(id).orElse(null);
+		
+	}
+	
 }

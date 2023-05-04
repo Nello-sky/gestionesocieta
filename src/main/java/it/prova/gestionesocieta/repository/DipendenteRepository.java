@@ -13,4 +13,5 @@ public interface DipendenteRepository extends CrudRepository<Dipendente, Long> {
 	@EntityGraph(attributePaths = { "societa" })
 	List<Dipendente> searchBySocieta(Societa societa);
 
+	
 }

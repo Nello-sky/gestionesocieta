@@ -13,5 +13,11 @@ public interface DipendenteService {
 	List<Dipendente> cercaPerSocietaEager(Societa societaInput);
 	
 	void insertDipendenteConSocieta(Dipendente dipendente, Societa societa) throws SocietaNotExistException;
+	
+	void aggiorna(Dipendente dipendente);
+	
+	void insertDipendente(Dipendente dipendente);
+	
+	Dipendente caricaSingoloDipendente(Long id);
 
 }

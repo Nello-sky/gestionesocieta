@@ -25,13 +25,13 @@ public class BatteriaDiTestService {
 
 		Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
 		if (nuovaSocieta.getId() != null)
-			throw new RuntimeException("testInserisciNuovoMunicipio...failed: transient object con id valorizzato");
+			throw new RuntimeException("testInserisciNuovaSocieta...failed: transient object con id valorizzato");
 		// salvo
 		societaService.inserisciNuovo(nuovaSocieta);
 		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
-			throw new RuntimeException("testInserisciNuovoMunicipio...failed: inserimento fallito");
+			throw new RuntimeException("testInserisciNuovaSocieta...failed: inserimento fallito");
 
-		System.out.println("testInserisciNuovoMunicipio........OK");
+		System.out.println("testInserisciNuovaSocieta........OK");
 
 	}
 
@@ -65,7 +65,7 @@ public class BatteriaDiTestService {
 		societaService.inserisciNuovo(nuovaSocieta);
 
 		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
-			throw new RuntimeException("testInserisciNuovoMunicipio...failed: inserimento fallito");
+			throw new RuntimeException("testDeleteSocietaConDipendenti...failed: inserimento fallito");
 
 		// inserisco 5 abitanti usando i range degli stream
 		IntStream.range(1, 6).forEach(i -> {
@@ -95,32 +95,86 @@ public class BatteriaDiTestService {
 		System.out.println("testDeleteSocietaConDipendenti........OK");
 
 	}
-	
+
 	public void testInserisciNuovoDipendenteDataSocieta() {
 		Long nowInMillisecondi = new Date().getTime();
 
 		Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
 		if (nuovaSocieta.getId() != null)
-			throw new RuntimeException("testInserisciNuovoMunicipio...failed: transient object con id valorizzato");
+			throw new RuntimeException("testInserisciNuovoDipendenteDataSocieta...failed: transient object con id valorizzato");
 		// salvo
 		societaService.inserisciNuovo(nuovaSocieta);
 		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
-			throw new RuntimeException("testInserisciNuovoMunicipio...failed: inserimento fallito");
-		
-		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi, LocalDate.now(), 55 , null);
-		
+			throw new RuntimeException("testInserisciNuovoDipendenteDataSocieta...failed: inserimento fallito");
+
+		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi,
+				LocalDate.now(), 55, null);
+
 		try {
 			dipendenteService.insertDipendenteConSocieta(nuovoDipendente, nuovaSocieta);
 		} catch (SocietaNotExistException e) {
 			e.printStackTrace();
 		}
- 
-		//controllo sia inserita
+		// controllo sia inserita
 		if (nuovoDipendente.getId() == null || nuovoDipendente.getId() < 1)
 			throw new RuntimeException("testInserisciNuovoDipendenteDataSocieta...failed: inserimento fallito");
-		
+
 		System.out.println("testInserisciNuovoDipendenteDataSocieta........OK");
 
+	}
+
+	public void testInserisciNuovoDipendente() {
+		Long nowInMillisecondi = new Date().getTime();
+
+		Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
+		if (nuovaSocieta.getId() != null)
+			throw new RuntimeException("testInserisciNuovoDipendente...failed: transient object con id valorizzato");
+		// salvo
+		societaService.inserisciNuovo(nuovaSocieta);
+		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
+			throw new RuntimeException("testInserisciNuovoDipendente...failed: inserimento fallito");
+
+		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi,
+				LocalDate.now(), 55, nuovaSocieta);
+
+		dipendenteService.inserisciNuovo(nuovoDipendente);
+		
+
+		// controllo sia inserita
+		if (nuovoDipendente.getId() == null || nuovoDipendente.getId() < 1)
+			throw new RuntimeException("testInserisciNuovoDipendente...failed: inserimento fallito");
+
+		System.out.println("testInserisciNuovoDipendente........OK");
+
+	}
+
+	public void testAggiornaDipendente() {
+		Long nowInMillisecondi = new Date().getTime();
+
+		Societa nuovaSocieta = new Societa("RS" + nowInMillisecondi, "VIA" + nowInMillisecondi, LocalDate.now());
+		if (nuovaSocieta.getId() != null)
+			throw new RuntimeException("testAggiornaDipendente...failed: transient object con id valorizzato");
+		// salvo
+		societaService.inserisciNuovo(nuovaSocieta);
+		if (nuovaSocieta.getId() == null || nuovaSocieta.getId() < 1)
+			throw new RuntimeException("testAggiornaDipendente...failed: inserimento societa fallito");
+		
+		Dipendente nuovoDipendente = new Dipendente("nome" + nowInMillisecondi, "cognome" + nowInMillisecondi, LocalDate.now(), 55 , nuovaSocieta);
+		dipendenteService.inserisciNuovo(nuovoDipendente);
+		if (nuovoDipendente.getId() == null || nuovoDipendente.getId() < 1)
+			throw new RuntimeException("testAggiornaDipendente...failed: inserimento dipendente fallito");
+		
+		//ricarico per confronto
+		Dipendente nuovoDipendenteUpload = dipendenteService.caricaSingoloDipendente(nuovoDipendente.getId());
+		nuovoDipendenteUpload.setRedditoAnnuoLordo(56);
+		//modifica
+		dipendenteService.aggiorna(nuovoDipendenteUpload);
+		//test
+		if (nuovoDipendenteUpload.getRedditoAnnuoLordo() != 56)
+			throw new RuntimeException("testAggiornaDipendente...failed: aggiornamento fallito");
+
+		System.out.println("testAggiornaDipendente........OK");
+		
 	}
 
 }
